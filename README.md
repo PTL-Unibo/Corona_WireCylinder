@@ -2,7 +2,7 @@
 
 This repository contains the code used in the paper:
 
-**"Positive DC Corona Discharges in Concentric Wire-Cylinder Reactors: Self-Consistent Modeling and Experimental Validation"**
+G. Mongaretto, F. Ragazzi, G. Neretti, A. Popoli, A. Cristofolini, "Positive DC Corona Discharges in Concentric Wire-Cylinder Reactors: Self-Consistent Modeling and Experimental Validation (submitted for review)
 
 The code reproduces the numerical simulations presented in the paper and provides a computational framework to study positive DC corona discharges in concentric wire-cylinder reactors.
 
@@ -38,7 +38,7 @@ The resulting system of equations is integrated in time using MATLAB's `ode15s` 
 If you use this code in your research, please cite:
 
 Positive DC Corona Discharges in Concentric Wire-Cylinder Reactors:  
-Self-Consistent Modeling and Experimental Validation [TO BE COMPLETED]
+Self-Consistent Modeling and Experimental Validation (submitted for review)
 
 ## References
 
