@@ -2,7 +2,7 @@
 
 This repository contains the code used in the paper:
 
-G. Mongaretto, F. Ragazzi, G. Neretti, A. Popoli, A. Cristofolini, "Positive DC Corona Discharges in Concentric Wire-Cylinder Reactors: Self-Consistent Modeling and Experimental Validation (submitted for review)
+G. Mongaretto, G. Caliò, F. Ragazzi, A. Popoli, G. Neretti, A. Cristofolini, "Positive DC Corona Discharges in Concentric Wire-Cylinder Reactors: Self-Consistent Modeling and Experimental Validation (submitted for review)
 
 The code reproduces the numerical simulations presented in the paper and provides a computational framework to study positive DC corona discharges in concentric wire-cylinder reactors.
 
