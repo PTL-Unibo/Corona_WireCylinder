@@ -36,6 +36,12 @@ elseif p.Kin_model == "Kozhevnikov"
     s_names = ["e", "N2", "O2", "N2+", "O2+", "O2-", "O", "N", "O4+"];
     ms = [me, Inf, Inf, 0.028/Na-me, 0.032/Na-me, 0.032/Na+me, Inf, Inf, 0.064/Na-me];
     n0 = [0.001e13, 0.7884*N, 0.2116*N, 0.333e13, 0.233e13, 0.999e13, 1e10, 1e10, 0.433e13];
+elseif p.Kin_model == "Hybrid"
+    nr = 26;
+    qs = [-1, 0, 0, 1, 1, -1, 0, 0, 1];
+    s_names = ["e", "N2", "O2", "N2+", "O2+", "O2-", "O", "N", "O4+"];
+    ms = [me, Inf, Inf, 0.028/Na-me, 0.032/Na-me, 0.032/Na+me, Inf, Inf, 0.064/Na-me];
+    n0 = [0.001e13, 0.7884*N, 0.2116*N, 0.333e13, 0.233e13, 0.999e13, 1e10, 1e10, 0.433e13];
 elseif p.Kin_model == "Townsend"
     nr = 4;
     qs = [-1, 1, -1];
@@ -127,6 +133,9 @@ elseif p.Kin_model == "Kozhevnikov"
     fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
     fComputeCoefficients = @(E, Te) ComputeCoefficientsKozhevnikov(E,Te,p.T_GAS,fCompute_k1_k2,N,r_interfaces,r_nodes,p.MuConst);
     fComputeOmega = @(n, kr, E) ComputeOmegaKozhevnikov(n, kr, E, fComputePhotoSource, p.Const_Omega);
+elseif p.Kin_model == "Hybrid"
+    fComputeCoefficients = @(E, Te) ComputeCoefficientsHybrid(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst);
+    fComputeOmega = @(n, kr, E) ComputeOmegaHybrid(n, kr, E, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "Townsend"
     fComputeCoefficients = @(E, Te) ComputeCoefficientsTownsend(E,Te,p.T_GAS,N,r_interfaces,r_nodes);
     fComputeOmega = @(n, kr, E) ComputeOmegaTownsend(n, kr, E, fComputePhotoSource, p.Const_Omega);
