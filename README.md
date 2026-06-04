@@ -21,7 +21,7 @@ The electric field is obtained by solving Poisson’s equation for the electric 
 4 plasma kinetic schemes for dry air can be employed:  
 a **3-species, 4-reaction model** [Morrow & Lowke, 1997] including e, ion+, and ion-;  
 a **6-species, 13-reaction model** [Parent et al., 2014] including e, N₂, O₂, N₂⁺, O₂⁺, and O₂⁻;  
-a **9-species, 26-reaction model** [Kozhevnikov et al., 2023] that adds N, O, and O₄⁺ to the previous scheme.
+a **9-species, 26-reaction model** [Kozhevnikov et al., 2023] that adds N, O, and O₄⁺ to the previous scheme;
 and a **hybrid model**, which combines the 6- and 9-species models.
 
 Photoionization is included through a Helmholtz-based approximation [Bourdon et al., 2007].
