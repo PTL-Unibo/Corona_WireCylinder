@@ -25,7 +25,7 @@ r(:,9)  = kr(:,9) .* n_O2m .* n_N2p .* n_O2;
 r(:,10) = kr(:,10) .* n_O2m .* n_O2p .* n_O2;
 r(:,11) = kr(:,11) .* n_e .* n_O2 .* n_O2;
 r(:,12) = kr(:,12) .* n_e .* n_O2 .* n_N2;
-r(:,13) = kr(:,13) .* n_O2m .* (n_O2 + n_N2); % according to Pancheshnyi (2013)
+r(:,13) = kr(:,13) .* n_O2m .* n_O2; % O2- + O2 -> e + 2O2, Parent et al. (2014), Table 2, reaction 6
 
 s = r(:,1) + r(:,2);
 if isempty(Sph)
