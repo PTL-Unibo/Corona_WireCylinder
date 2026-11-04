@@ -19,11 +19,7 @@ if isempty(flag)
         wct_last=datetime("now");
     end
     if mod(counter,update_frequency) == 0
-        clear ComputeOmegaKozhevnikov
-        clear ComputeOmegaTownsend
-        clear ComputeOmegaParent
-        clear ComputeOmegaParentConst
-        clear ComputeOmegaBenilov
+        ResetPhotoSource();
     end
 else
     if flag == "init"
@@ -52,10 +48,7 @@ else
         uicontrol('Style', 'text', 'String', 'Time Remaining','Position', [7 25 90 15])
         uicontrol('Style', 'text', 'Tag', 'esttime', 'String', num2str(inf),'Position', [7 5 90 15])
         if mod(counter,update_frequency) == 0
-            clear ComputeOmegaKozhevnikov
-            clear ComputeOmegaTownsend
-            clear ComputeOmegaParent
-            clear ComputeOmegaParentConst
+            ResetPhotoSource();
         end
         pause(0.1);
     elseif flag == "done"

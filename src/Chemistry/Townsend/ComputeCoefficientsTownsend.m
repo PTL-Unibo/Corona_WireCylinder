@@ -4,7 +4,7 @@ function [kr, mu, D] = ComputeCoefficientsTownsend(E,Te,T,N,r_interfaces,r_nodes
 Ec = interp1(r_interfaces,E,r_nodes);
 Tec = interp1(r_interfaces,Te,r_nodes);
 
-LUT = load("DATA/Loki_E_mu_D_alpha_eta_800Td.csv");
+LUT = load("DATA/Loki_E_mu_D_alpha_eta_3000Td.csv");
 
 alpha = MyInterp1(LUT(:,1),LUT(:,4),abs(Ec)/N*1e21);
 eta = MyInterp1(LUT(:,1),LUT(:,5),abs(Ec)/N*1e21);

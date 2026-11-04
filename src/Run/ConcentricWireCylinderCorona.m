@@ -36,8 +36,12 @@ elseif p.Kin_model == "Kozhevnikov"
     s_names = ["e", "N2", "O2", "N2+", "O2+", "O2-", "O", "N", "O4+"];
     ms = [me, Inf, Inf, 0.028/Na-me, 0.032/Na-me, 0.032/Na+me, Inf, Inf, 0.064/Na-me];
     n0 = [0.001e13, 0.7884*N, 0.2116*N, 0.333e13, 0.233e13, 0.999e13, 1e10, 1e10, 0.433e13];
-elseif p.Kin_model == "Hybrid"
-    nr = 26;
+elseif p.Kin_model == "PTL-AirCorona" || p.Kin_model == "PTL-AirCorona_reduced"
+    if p.Kin_model == "PTL-AirCorona"
+        nr = 26;
+    else
+        nr = 13;
+    end
     qs = [-1, 0, 0, 1, 1, -1, 0, 0, 1];
     s_names = ["e", "N2", "O2", "N2+", "O2+", "O2-", "O", "N", "O4+"];
     ms = [me, Inf, Inf, 0.028/Na-me, 0.032/Na-me, 0.032/Na+me, Inf, Inf, 0.064/Na-me];
@@ -123,19 +127,28 @@ elseif p.BC == "GorinII"
 end
 
 if p.Kin_model == "Parent"
-    fComputeCoefficients = @(E, Te) ComputeCoefficientsParent(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst);
+    fComputeCoefficients = @(E, Te) ComputeCoefficientsParent(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst,p.IonTemp);
     fComputeOmega = @(n, kr, E) ComputeOmegaParent(n, kr, E, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "ParentConst"
-    fComputeCoefficients = @(E, Te) ComputeCoefficientsParentConst(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst);
+    fComputeCoefficients = @(E, Te) ComputeCoefficientsParentConst(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst,p.IonTemp);
     fComputeOmega = @(n, kr, E) ComputeOmegaParentConst(n, kr, E, N, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "Kozhevnikov"
     E_k1_k2 = load("DATA\E_k1_k2.csv");
     fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
     fComputeCoefficients = @(E, Te) ComputeCoefficientsKozhevnikov(E,Te,p.T_GAS,fCompute_k1_k2,N,r_interfaces,r_nodes,p.MuConst);
     fComputeOmega = @(n, kr, E) ComputeOmegaKozhevnikov(n, kr, E, fComputePhotoSource, p.Const_Omega);
-elseif p.Kin_model == "Hybrid"
-    fComputeCoefficients = @(E, Te) ComputeCoefficientsHybrid(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst);
-    fComputeOmega = @(n, kr, E) ComputeOmegaHybrid(n, kr, E, fComputePhotoSource, p.Const_Omega);
+elseif p.Kin_model == "PTL-AirCorona"
+    E_k1_k2 = load("DATA\E_k1_k2.csv");
+    fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
+    LUT = load("DATA\Loki_E_mu_D_alpha_eta_3000Td.csv"); % electron mobility and diffusion
+    fComputeCoefficients = @(E, Te) ComputeCoefficientsPTLAirCorona(E,Te,p.T_GAS,fCompute_k1_k2,LUT,N,r_interfaces,r_nodes,p.MuConst);
+    fComputeOmega = @(n, kr, E) ComputeOmegaPTLAirCorona(n, kr, E, fComputePhotoSource, p.Const_Omega);
+elseif p.Kin_model == "PTL-AirCorona_reduced"
+    E_k1_k2 = load("DATA\E_k1_k2.csv");
+    fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
+    LUT = load("DATA\Loki_E_mu_D_alpha_eta_3000Td.csv"); % electron mobility and diffusion
+    fComputeCoefficients = @(E, Te) ComputeCoefficientsPTLAirCoronaReduced(E,Te,p.T_GAS,fCompute_k1_k2,LUT,N,r_interfaces,r_nodes,p.MuConst);
+    fComputeOmega = @(n, kr, E) ComputeOmegaPTLAirCoronaReduced(n, kr, E, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "Townsend"
     fComputeCoefficients = @(E, Te) ComputeCoefficientsTownsend(E,Te,p.T_GAS,N,r_interfaces,r_nodes);
     fComputeOmega = @(n, kr, E) ComputeOmegaTownsend(n, kr, E, fComputePhotoSource, p.Const_Omega);
@@ -150,7 +163,8 @@ if p.OutFcn == "bar"
     end
     output_func = @(t,y,flag) OdeProgressBar(t,y,flag,bar_scale,1);
 elseif p.OutFcn == "none"
-    output_func = [];
+    % the photoionization source must be updated after each step anyway
+    output_func = @ResetPhotoSource;
 end
 
 disp("Initialization finished")
@@ -168,6 +182,7 @@ OdeFuncDD = @(t,y) DaeFunc(t,y, ...
                            Gamma2GammaClose,N2RhoEps_cond,BCel_val,indices_boundaries);
 start_time = tic();
 y0 = [n_start(:); phi_coherent];
+ResetPhotoSource(); % discard the photoionization source of previous runs
 ode_opts.InitialSlope = OdeFuncDD(0,y0);
 [t_out,y_out,stats_out] = ode15s(OdeFuncDD,p.time_instants,y0,ode_opts);
 wct = toc(start_time);
@@ -196,6 +211,7 @@ else
 end
 
 for it=1:nt
+    ResetPhotoSource(); % Omega and Sph consistent with the state at t_out(it)
     [~,Gamma,Omega,rr,Sph,kr] = OdeFuncDD(t_out(it), y_out(:,it));
     Gamma_out(:,it) = Gamma;
     Omega_out(:,it) = Omega;

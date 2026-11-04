@@ -9,6 +9,7 @@ opts.Poisson = 'Lin';
 opts.Te = 'Loki';
 opts.MuConst = -1;
 opts.T_GAS = 300;
+opts.IonTemp = -1; % 1: effective ion temperature (Sieck et al. 2000), -1: T_GAS
 opts.RelTol = 1e-2; 
 opts.OutFcn = 'bar';
 opts.mesh = -1;

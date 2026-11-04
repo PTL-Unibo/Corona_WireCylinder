@@ -25,7 +25,7 @@ r(:,9)  = kr(:,9) .* n_O2m .* n_N2p .* n_O2;
 r(:,10) = kr(:,10) .* n_O2m .* n_O2p .* n_O2;
 r(:,11) = kr(:,11) .* n_e .* n_O2 .* n_O2;
 r(:,12) = kr(:,12) .* n_e .* n_O2 .* n_N2;
-r(:,13) = kr(:,13) .* n_O2m .* n_O2;
+r(:,13) = kr(:,13) .* n_O2m .* (n_O2 + n_N2); % according to Pancheshnyi (2013)
 
 s = r(:,1) + r(:,2);
 if isempty(Sph)
@@ -33,8 +33,8 @@ if isempty(Sph)
 end
 
 omega(:,1) = -r(:,11) + r(:,1) + r(:,2) - r(:,4) - r(:,3) + r(:,13) - r(:,12) + Sph + Const_Omega;
-omega(:,2) = r(:,1) - r(:,4) - r(:,5) - r(:,7) - r(:,9) + Sph*0.5 + Const_Omega*0.5;
-omega(:,3) = r(:,2) - r(:,3) - r(:,6) - r(:,8) - r(:,10) + Sph*0.5 + Const_Omega*0.5;
+omega(:,2) = r(:,1) - r(:,4) - r(:,5) - r(:,7) - r(:,9) + Sph*0.8 + Const_Omega*0.5;
+omega(:,3) = r(:,2) - r(:,3) - r(:,6) - r(:,8) - r(:,10) + Sph*0.2 + Const_Omega*0.5;
 omega(:,4) = r(:,11) - r(:,5) - r(:,6) - r(:,13) + r(:,12) - r(:,7) - r(:,8) - r(:,9) - r(:,10) + 1e5; 
 
 end
