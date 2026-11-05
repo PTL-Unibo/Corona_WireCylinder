@@ -115,8 +115,8 @@ qs_col = reshape(ones(p.np+1,1) .* sign(qs), [], 1);
 fAssembleKD = @(D) AssembleKD(D,delta,I_D,J_D,li,p.np,ns);
 fAssembleKMu = @(E,mu) AssembleKMu(E,mu,I_Mu,J_Mu,li,qs_col,p.np,ns);
 
-Evals = load("DATA\Evals.csv");
-Tevals = load("DATA\Tevals.csv");
+Evals = load(fullfile("DATA","Evals.csv"));
+Tevals = load(fullfile("DATA","Tevals.csv"));
 fComputeTe = @(E) ComputeTeLoki(E, Evals, Tevals, N, p.Te);
 fComputePhotoSource = @(E,s) PhotoSource(E,s,r_nodes,r_interfaces,Vol,N,Qf,Kph_1,Kph_2,Kph_3,A1,A2,A3,p.Photoionization);
 
@@ -133,20 +133,20 @@ elseif p.Kin_model == "ParentConst"
     fComputeCoefficients = @(E, Te) ComputeCoefficientsParentConst(E,Te,p.T_GAS,N,r_interfaces,r_nodes,p.MuConst,p.IonTemp);
     fComputeOmega = @(n, kr, E) ComputeOmegaParentConst(n, kr, E, N, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "Kozhevnikov"
-    E_k1_k2 = load("DATA\E_k1_k2.csv");
+    E_k1_k2 = load(fullfile("DATA","E_k1_k2.csv"));
     fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
     fComputeCoefficients = @(E, Te) ComputeCoefficientsKozhevnikov(E,Te,p.T_GAS,fCompute_k1_k2,N,r_interfaces,r_nodes,p.MuConst);
     fComputeOmega = @(n, kr, E) ComputeOmegaKozhevnikov(n, kr, E, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "PTL-AirCorona"
-    E_k1_k2 = load("DATA\E_k1_k2.csv");
+    E_k1_k2 = load(fullfile("DATA","E_k1_k2.csv"));
     fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
-    LUT = load("DATA\Loki_E_mu_D_alpha_eta_3000Td.csv"); % electron mobility and diffusion
+    LUT = load(fullfile("DATA","Loki_E_mu_D_alpha_eta_3000Td.csv")); % electron mobility and diffusion
     fComputeCoefficients = @(E, Te) ComputeCoefficientsPTLAirCorona(E,Te,p.T_GAS,fCompute_k1_k2,LUT,N,r_interfaces,r_nodes,p.MuConst);
     fComputeOmega = @(n, kr, E) ComputeOmegaPTLAirCorona(n, kr, E, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "PTL-AirCorona_reduced"
-    E_k1_k2 = load("DATA\E_k1_k2.csv");
+    E_k1_k2 = load(fullfile("DATA","E_k1_k2.csv"));
     fCompute_k1_k2 = @(E) Compute_k1_k2(E, E_k1_k2, N);
-    LUT = load("DATA\Loki_E_mu_D_alpha_eta_3000Td.csv"); % electron mobility and diffusion
+    LUT = load(fullfile("DATA","Loki_E_mu_D_alpha_eta_3000Td.csv")); % electron mobility and diffusion
     fComputeCoefficients = @(E, Te) ComputeCoefficientsPTLAirCoronaReduced(E,Te,p.T_GAS,fCompute_k1_k2,LUT,N,r_interfaces,r_nodes,p.MuConst);
     fComputeOmega = @(n, kr, E) ComputeOmegaPTLAirCoronaReduced(n, kr, E, fComputePhotoSource, p.Const_Omega);
 elseif p.Kin_model == "Townsend"
