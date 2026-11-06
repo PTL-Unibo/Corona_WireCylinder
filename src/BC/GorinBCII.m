@@ -13,10 +13,10 @@ u_boundary(1,:) = -u_boundary(1,:);
 % the velocity u_boundary is pointing towards the wall
 
 Te = Te*11600;
-v_th_e = sqrt(8*kB*Te(1)./(pi*me));
-v_th_single_line(1,1) = v_th_e;
-
 v_th = repmat(v_th_single_line,2,1);
+% electron thermal velocity from the local Te at each wall
+% (first interface: emitter, last interface: collector)
+v_th(:,1) = sqrt(8*kB*Te([1 end])./(pi*me));
 v_E = max(u_boundary,0);
 
 GammaBC = (1-r)./(1+r) .* n_boundary .* (0.5*v_th + v_E);

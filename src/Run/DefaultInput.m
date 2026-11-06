@@ -3,7 +3,7 @@ function [opts] = DefaultInput(opts)
 %   Detailed explanation goes here
 opts.a = 0; 
 opts.b = 0;
-opts.gamma_II = 1e-2;
+opts.gamma_II = 1e-3;
 opts.Const_Omega = 0;
 opts.Poisson = 'Lin';
 opts.Te = 'Loki';
